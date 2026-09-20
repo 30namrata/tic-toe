@@ -1,35 +1,37 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function GameBoard ({onSelected, board}) {
-   
-   
-    // const[playboard, setPlayBoard] = useState(initialGame);
+function GameBoard({ onSelected, board, winningCombination, hasWinner }) {
+  const isWinningSquare = (rowIndex, colIndex) => {
+    if (!winningCombination) return false;
+    return winningCombination.some(
+      (square) => square.row === rowIndex && square.column === colIndex
+    );
+  };
 
-    // const clickOnSymabolGame = (rowIndex, colIndex) => {
-    //     setPlayBoard((playboard)=> {
-    //     let updatedBoard =[...playboard.map((innerArray) => ([...innerArray]))]
-    //     updatedBoard[rowIndex][colIndex]= isActive;
-    //     return updatedBoard;
-    //     });
-    // onSelected();
-    // }
-  
   return (
-    <ol id='game-board'>
-        {board.map((row, rowIndex)=> (
+    <ol id="game-board">
+      {board.map((row, rowIndex) => (
         <li key={rowIndex}>
-            <ol>
-                {row.map((playerSymbol, colIndex)=>(
-                    <li id={colIndex}>
-                        <button onClick={() => (onSelected(rowIndex, colIndex))} disabled={playerSymbol !== null}>{playerSymbol}</button>
-                    </li>
-                ))}
-            </ol>
+          <ol>
+            {row.map((playerSymbol, colIndex) => {
+              const isWinning = isWinningSquare(rowIndex, colIndex);
+              return (
+                <li key={colIndex}>
+                  <button
+                    onClick={() => onSelected(rowIndex, colIndex)}
+                    disabled={playerSymbol !== null || hasWinner}
+                    className={isWinning ? 'winning-square' : undefined}
+                  >
+                    {playerSymbol}
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
         </li>
-    ))}
-         
+      ))}
     </ol>
-  )
+  );
 }
 
-export default GameBoard
+export default GameBoard;
